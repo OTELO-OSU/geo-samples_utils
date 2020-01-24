@@ -2,6 +2,7 @@
 Utilitaires pour geo-samples
 
 Le programme est piloté par un fichier de configuration (config.ini)
+
 Ce fichier contient :
  * des variables nécessaire à l'environnement du programme
  * les zones obligatoires du format, zones de metadata et certaines zones de données
