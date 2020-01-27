@@ -12,11 +12,13 @@
 #	serviront à remplir les fichiers de metadata
 # Les analyses commencent à la première ligne dont la première colonne
 #	contient la valeur SAMPLE_NAME, cette ligne contient le nom des champs
-# La colonne 1 contient le nom des échantillons
+# La ligne suivante contient les unités des valeurs
+# La colonne 1 des lignes d'analyse contient le nom des échantillons
 #
 # EN SORTIE : un fichier des metadatas + un fichier des données par échantillon
 #
 # 2020-01-20 PhS creation
+# 2020-01-27 PhS - traitement de la ligne des unités
 
 import os, sys, io, configparser, re
 
@@ -230,6 +232,8 @@ def ecriture_meta(iwb_meta):
 
 T_metadata = []       # liste des zones de metadata (clef, valeur))
 T_entete = []         # liste des en-têtes des colonnes des analyses
+T_entete_u = []       # liste des unités en en-têtes des colonnes des analyses
+b_entete_u = False    # indicateur d'au moins une valeur existante dans la ligne des unités
 T_measurement = [''] * len(T_measurement_header_z) # informations sur les mesures, init au nombre de zones de headers
 T_measurement[0] = 'MEASUREMENT'
 T_sampling_point = [''] * len(T_sampling_point_header_z) # informations sur le sampling_point, init au nombre de zones de headers
@@ -292,6 +296,16 @@ while (lig <= len(col_1) and arret == 0):
 			arret = 1 # fin des metadata
 
 	lig += 1
+
+# la ligne suivant la ligne des en-têtes contient les unités des valeurs des colonnes d'analyse
+if ws_input.cell(row=lig, column=ws_input.min_column).value is None:
+	# la première colonne est vide
+	b_entete_u = False # indicateur d'au moins une valeur existante dans la ligne des unités
+	for i in range(ws_input.min_column, ws_input.max_column + 1) :
+		T_entete_u.append(ws_input.cell(row=lig, column=i).value)
+		if ws_input.cell(row=lig, column=i).value is not None:
+			b_entete_u = True
+
 
 if debug > 1: print("lig fin des metadata : " + str(der_lig_meta))
 
@@ -357,6 +371,12 @@ for lig in range(lig_1_echt,len(col_1) + 1):
 			# la ligne d'analyse de l'échantillon
 			l = 2 # première ligne d'analyse dans le nouveau fichier
 		
+			if b_entete_u == True:
+				# la ligne des unités si elle existe
+				for i in range(ws_input.min_column, ws_input.max_column + 1) :
+					ws_output.cell(row=l, column=i, value=T_entete_u[i - 1])
+				l +=1
+
 			# ---------- initialisation du nouveau fichier de metadata ----------
 			wb_meta = Workbook()
 			ws_meta = wb_meta.active
@@ -458,7 +478,5 @@ if nom_echt != "" :
 	# --------- écriture du fichier de metadata ----------
 	ecriture_meta(iwb_meta)
 	
-sys.exit(0)
-
 # ---------- fin du fichier ----------
 
