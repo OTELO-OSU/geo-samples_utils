@@ -458,5 +458,7 @@ if nom_echt != "" :
 	# --------- écriture du fichier de metadata ----------
 	ecriture_meta(iwb_meta)
 	
+sys.exit(0)
+
 # ---------- fin du fichier ----------
 
