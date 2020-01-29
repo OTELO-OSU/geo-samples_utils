@@ -22,7 +22,7 @@
 
 import os, sys, io, configparser, re
 
-if sys.version_info<(3,6,0):
+if sys.version_info<(3,5,3):
   sys.stderr.write("You need python 3.6 or later to run this script\n")
   exit(1)
 
