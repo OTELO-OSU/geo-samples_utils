@@ -1,5 +1,22 @@
 #!/usr/bin/env python3
 #
+#    program: reformatage_2_geosample.py separates metadata and date from a one file
+#
+#    Copyright (C) 2020 phscheffer@univ-lorraine.fr
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
 # -*- coding: utf-8 -*-
 #
 # Programme: reformatage_2_geosample.py
@@ -23,7 +40,7 @@
 import os, sys, io, configparser, re
 
 if sys.version_info<(3,5,3):
-  sys.stderr.write("You need python 3.6 or later to run this script\n")
+  sys.stderr.write("You need python 3.5.3 or later to run this script\n")
   exit(1)
 
 from openpyxl import Workbook
