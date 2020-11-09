@@ -1,0 +1,60 @@
+Programme geosample_split.py
+
+Programme de transformation d'un fichier d'échantillons et d'analyses en couples de fichiers de métadonnées et de données pour chaque type d'analyse.
+
+Ce programme permet d'insérer en masse des données dans la base de données mongo d'une instance geosample.
+
+Le fichier d'entrée doit être au format xlsx.
+
+Une ligne du fichier contient les métadonnées de l'échantillon et les résultats d'un type d'analyse.
+Les métadonnées obligatoires sont celles définies préalablement et nécessaires au traitement d'insertion des données dans la base de données mongo.
+La seule métadonnée nécessaire à ce programme est la zone SAMPLE_NAME. Elle peut être à n'importe quel rang, le programme se charge lui-même de la placer en position 1.
+La première ligne du fichier contient les libellés des zones.
+La deuxième ligne, s'il elle existe, doit contenir le type de la donnée ou l'unité de la valeur d'analyse.
+
+Le traitement des données est piloté par le fichier config.ini.
+
+Avant de lancer le traitement:
+dans le fichier de données à traiter :
+  - il faut vérifier les colonnes du fichier
+  - supprimer les éventuelles lignes de menu
+dans le fichier de paramètres config.ini :
+  - assigner le paramètre active_sheet au nom de la feuille des données du fichier.
+  - accorder le paramètre lig_entete du fichier config.ini avec le nombre de lignes d'en-tête du fichier (1 ou 2).
+  - vérifier la liste des zones de métadonnées (zones obligatoires).
+    Les zones définies comme zones obligatoires vont dans le fichier des métadonnées.
+    Les zones déclarées dans cette liste ne seront pas présentes dans le fichier de données.
+    A l'inverse, les zones non déclarées dans cette liste seront présentes dans le fichier de données.
+  - construire la liste des zones à occurrences multiples (le libellé de la colonne est suffixé de l'index : zone1, zone2, ...).
+    Le libellé, sans index, doit figurer dans la liste des zones obligatoires.
+  - si une zone obligatoire n'est pas présente dans le fichier mais qu'elle doit absolument être présente,
+    il faut l'ajouter à la liste des valeurs par défaut des zones obligatoires. Elle sera créée avec la valeur définie.
+  - si des libellés ne correspondent pas aux libellés attendus,
+    il est possible de les transformer en une valeur définie dans la liste conv_entete_zones.
+    Les libellés des occurrences des zones multiples doivent être déclarés dans cette liste.
+  - le paragraphe sampling-point-header permet de préciser les en-têtes de colonnes de sampling-point.
+    Les zones sont affichées dans l'ordre d'apparition des déclarations dans le fichier de métadonnées.
+  - le paragraphe measurement-header permet de préciser les en-têtes de colonnes de measurement.
+    Les zones sont affichées dans l'ordre d'apparition des déclarations dans le fichier de métadonnées.
+  - le paragraphe methology-header permet de préciser les en-têtes de colonnes de methodology.
+    Les zones sont affichées dans l'ordre d'apparition des déclarations dans le fichier de métadonnées.
+  - le paragraphe PATHS regroupe les valeurs PICTURE et RAW_DATA qui contiennent les chemins à ajouter aux noms des fichiers
+    image et données s'il est besoin de les modifier.
+  - le paragraphe SUFF_FICHIER regroupe les valeurs PICTURE et RAW_DATA qui contiennent les suffixes à ajouter aux noms des fichiers
+    image et données s'il est besoin de les modifier. La valeur SAMPLE est obligatoire dans les noms des fichiers image.
+
+
+Lancement de la commande:
+python3 geosample_split.py <fichier.xlsx> <options>
+
+Les options de la ligne de commandes :
+  -h : affichage de l'aide
+  -d[n] : affichage d'informations de traitement.
+          -d1 : affichage des tables lues dans le fichier config.ini et arrêt.
+          -d2-5 : plus d'informations sur le traitement
+
+  --debug : id. L'option peut s'utiliser plusieurs fois.
+
+En sortie, le programme crée un répertoire dont le nom est défini dans le fichier de paramètres dans lequel il crée les fichiers
+de métadonnées et de données pour chaque type d'analyse.
+
